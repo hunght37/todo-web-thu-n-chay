@@ -2,7 +2,13 @@
 class TaskManager {
     constructor() {
         try {
-            this.tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+            // Kiểm tra xem localStorage có khả dụng không
+            if (typeof localStorage !== 'undefined' && localStorage !== null) {
+                this.tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+            } else {
+                this.tasks = [];
+                console.warn('localStorage is not available');
+            }
         } catch (error) {
             console.error('Error loading tasks:', error);
             this.tasks = [];
@@ -279,15 +285,17 @@ class TaskManager {
         const lightIcon = document.getElementById('theme-toggle-light-icon');
 
         try {
-            // Set initial theme
-            if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-                document.documentElement.classList.add('dark');
-                darkIcon.classList.add('hidden');
-                lightIcon.classList.remove('hidden');
-            } else {
-                document.documentElement.classList.remove('dark');
-                darkIcon.classList.remove('hidden');
-                lightIcon.classList.add('hidden');
+            if (typeof localStorage !== 'undefined' && localStorage !== null) {
+                // Set initial theme
+                if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                    document.documentElement.classList.add('dark');
+                    darkIcon.classList.add('hidden');
+                    lightIcon.classList.remove('hidden');
+                } else {
+                    document.documentElement.classList.remove('dark');
+                    darkIcon.classList.remove('hidden');
+                    lightIcon.classList.add('hidden');
+                }
             }
         } catch (error) {
             console.error('Error accessing theme preference:', error);
@@ -298,7 +306,10 @@ class TaskManager {
                 document.documentElement.classList.toggle('dark');
                 darkIcon.classList.toggle('hidden');
                 lightIcon.classList.toggle('hidden');
-                localStorage.theme = document.documentElement.classList.contains('dark') ? 'dark' : 'light';
+                
+                if (typeof localStorage !== 'undefined' && localStorage !== null) {
+                    localStorage.theme = document.documentElement.classList.contains('dark') ? 'dark' : 'light';
+                }
             } catch (error) {
                 console.error('Error saving theme preference:', error);
             }
@@ -326,12 +337,16 @@ class TaskManager {
 
     saveTasks() {
         try {
-            localStorage.setItem('tasks', JSON.stringify(this.tasks));
+            if (typeof localStorage !== 'undefined' && localStorage !== null) {
+                localStorage.setItem('tasks', JSON.stringify(this.tasks));
+            } else {
+                console.warn('localStorage is not available');
+            }
         } catch (error) {
             console.error('Error saving tasks:', error);
             Swal.fire({
                 title: 'Error!',
-                text: 'Could not save tasks. Storage might be full.',
+                text: 'Could not save tasks. Storage might not be available.',
                 icon: 'error'
             });
         }
@@ -340,6 +355,3 @@ class TaskManager {
 
 // Initialize the task manager
 const taskManager = new TaskManager();
-
-// Export for global access
-window.taskManager = taskManager;
