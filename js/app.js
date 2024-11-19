@@ -1,7 +1,12 @@
 // Task Management
 class TaskManager {
     constructor() {
-        this.tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+        try {
+            this.tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+        } catch (error) {
+            console.error('Error loading tasks:', error);
+            this.tasks = [];
+        }
         this.setupEventListeners();
         this.updateUI();
         this.setupThemeToggle();
@@ -31,7 +36,12 @@ class TaskManager {
         const priorityInput = document.getElementById('task-priority');
         const deadlineInput = document.getElementById('task-deadline');
 
+        // Enhanced validation
         if (!taskInput.value.trim()) return;
+        if (!['low', 'medium', 'high'].includes(priorityInput.value)) {
+            console.error('Invalid priority value');
+            return;
+        }
 
         const newTask = {
             id: Date.now(),
@@ -188,6 +198,16 @@ class TaskManager {
 
     renderTasks(tasks) {
         const taskList = document.getElementById('task-list');
+        
+        // Remove old event listeners
+        const oldTasks = taskList.querySelectorAll('.task-item');
+        oldTasks.forEach(task => {
+            const checkbox = task.querySelector('input[type="checkbox"]');
+            if (checkbox) {
+                checkbox.removeEventListener('change', checkbox.changeHandler);
+            }
+        });
+        
         taskList.innerHTML = '';
 
         tasks.forEach(task => {
@@ -258,23 +278,30 @@ class TaskManager {
         const darkIcon = document.getElementById('theme-toggle-dark-icon');
         const lightIcon = document.getElementById('theme-toggle-light-icon');
 
-        // Set initial theme
-        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-            document.documentElement.classList.add('dark');
-            darkIcon.classList.add('hidden');
-            lightIcon.classList.remove('hidden');
-        } else {
-            document.documentElement.classList.remove('dark');
-            darkIcon.classList.remove('hidden');
-            lightIcon.classList.add('hidden');
+        try {
+            // Set initial theme
+            if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark');
+                darkIcon.classList.add('hidden');
+                lightIcon.classList.remove('hidden');
+            } else {
+                document.documentElement.classList.remove('dark');
+                darkIcon.classList.remove('hidden');
+                lightIcon.classList.add('hidden');
+            }
+        } catch (error) {
+            console.error('Error accessing theme preference:', error);
         }
 
         themeToggleBtn.addEventListener('click', () => {
-            document.documentElement.classList.toggle('dark');
-            darkIcon.classList.toggle('hidden');
-            lightIcon.classList.toggle('hidden');
-
-            localStorage.theme = document.documentElement.classList.contains('dark') ? 'dark' : 'light';
+            try {
+                document.documentElement.classList.toggle('dark');
+                darkIcon.classList.toggle('hidden');
+                lightIcon.classList.toggle('hidden');
+                localStorage.theme = document.documentElement.classList.contains('dark') ? 'dark' : 'light';
+            } catch (error) {
+                console.error('Error saving theme preference:', error);
+            }
         });
     }
 
@@ -298,7 +325,16 @@ class TaskManager {
     }
 
     saveTasks() {
-        localStorage.setItem('tasks', JSON.stringify(this.tasks));
+        try {
+            localStorage.setItem('tasks', JSON.stringify(this.tasks));
+        } catch (error) {
+            console.error('Error saving tasks:', error);
+            Swal.fire({
+                title: 'Error!',
+                text: 'Could not save tasks. Storage might be full.',
+                icon: 'error'
+            });
+        }
     }
 }
 
