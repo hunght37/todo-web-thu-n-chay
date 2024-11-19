@@ -4,8 +4,8 @@
   "description": "Advanced Todo List Application",
   "main": "index.js",
   "scripts": {
-    "build": "npx tailwindcss -i ./css/input.css -o ./css/styles.css --watch",
-    "build:prod": "npx tailwindcss -i ./css/input.css -o ./css/styles.css --minify"
+    "dev": "npx tailwindcss -i ./css/input.css -o ./css/styles.css --watch",
+    "build": "npx tailwindcss -i ./css/input.css -o ./css/styles.css --minify"
   },
   "keywords": ["todo", "tailwindcss"],
   "author": "",
