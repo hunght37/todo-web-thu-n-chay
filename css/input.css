@@ -1,0 +1,86 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+    .filter-btn {
+        @apply px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200
+        bg-gray-200 text-gray-700 hover:bg-gray-300
+        dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600;
+    }
+
+    .filter-btn.active {
+        @apply bg-blue-500 text-white hover:bg-blue-600
+        dark:bg-blue-600 dark:hover:bg-blue-700;
+    }
+
+    .task-item {
+        @apply bg-white dark:bg-gray-800 rounded-lg p-4 shadow-md
+        transform transition-all duration-200 hover:shadow-lg
+        border border-gray-200 dark:border-gray-700;
+    }
+
+    .task-item.completed {
+        @apply bg-gray-50 dark:bg-gray-900;
+    }
+
+    .task-item.completed .task-text {
+        @apply line-through text-gray-500;
+    }
+
+    .priority-high {
+        @apply text-red-500 dark:text-red-400;
+    }
+
+    .priority-medium {
+        @apply text-yellow-500 dark:text-yellow-400;
+    }
+
+    .priority-low {
+        @apply text-green-500 dark:text-green-400;
+    }
+
+    .task-actions button {
+        @apply p-2 rounded-lg transition-colors duration-200
+        hover:bg-gray-100 dark:hover:bg-gray-700;
+    }
+}
+
+/* Animation classes */
+.task-enter {
+    opacity: 0;
+    transform: translateY(20px);
+}
+
+.task-enter-active {
+    opacity: 1;
+    transform: translateY(0);
+    transition: opacity 300ms, transform 300ms;
+}
+
+.task-exit {
+    opacity: 1;
+}
+
+.task-exit-active {
+    opacity: 0;
+    transform: translateY(-20px);
+    transition: opacity 300ms, transform 300ms;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    @apply bg-gray-100 dark:bg-gray-900;
+}
+
+::-webkit-scrollbar-thumb {
+    @apply bg-gray-400 dark:bg-gray-700 rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    @apply bg-gray-500 dark:bg-gray-600;
+}

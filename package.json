@@ -1,0 +1,16 @@
+{
+  "name": "advanced-todo-app",
+  "version": "1.0.0",
+  "description": "Advanced Todo List Application",
+  "main": "index.js",
+  "scripts": {
+    "build": "npx tailwindcss -i ./css/input.css -o ./css/styles.css --watch",
+    "build:prod": "npx tailwindcss -i ./css/input.css -o ./css/styles.css --minify"
+  },
+  "keywords": ["todo", "tailwindcss"],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "tailwindcss": "^3.3.0"
+  }
+}
